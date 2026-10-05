@@ -86,34 +86,42 @@ class SeqGenerator(tensorflow.keras.utils.Sequence):
 
 def train_model(
         data_split_idx=0,
-        starting_model_path=None,
+        n_rounds=2,
         output_name=None,
         seed=None,
+        save_intermediate=False,
         save_checkpoints=False,
     ):
     """
     Train a model on one data split.
 
+    Training proceeds in rounds. Each round trains until validation loss
+    stops improving, keeping the best weights, and starts with a new
+    optimizer.
+
     Parameters
     ----------
     data_split_idx : int, optional
         Index of the chromosome split.
-    starting_model_path : str or pathlib.Path, optional
-        Model to continue training from. If None, a new model is created.
+    n_rounds : int, optional
+        Number of training rounds.
     output_name : str, optional
-        Name of the output model file, without extension. If None,
-        "deepdanio_split_{data_split_idx}_intermediate" is used for new models
-        and "deepdanio_split_{data_split_idx}" when continuing from a model.
+        Name of the output model, without extension. Default is the model name
+        for this split.
     seed : int, optional
         Random seed for Python, NumPy, and TensorFlow.
+    save_intermediate : bool, optional
+        Whether to save the model after each round before the last, as
+        "{output_name}_round_{i}".
     save_checkpoints : bool, optional
         Whether to save the model after each epoch.
 
     """
     if output_name is None:
-        output_name = f'deepdanio_split_{data_split_idx}'
-        if starting_model_path is None:
-            output_name += '_intermediate'
+        output_name = definitions.DEEPDANIO_MODEL_NAME.format(split=data_split_idx)
+    output_path = definitions.DEEPDANIO_MODEL_DIR / f'{output_name}.h5'
+    if output_path.exists():
+        raise FileExistsError(f"{output_path} already exists.")
     print(f"Training model {output_name}...")
 
     if seed is not None:
@@ -157,21 +165,17 @@ def train_model(
 
     # Model
     #######
-    if starting_model_path is not None:
-        print(f"Continuing training from {starting_model_path}.")
-        keras_model = model.load_model(starting_model_path)
-    else:
-        keras_model = model.make_resnet(
-            definitions.SEQ_LENGTH,
-            groups=4,
-            blocks_per_group=3,
-            filters=256,
-            kernel_size=13,
-            dilation_rates=[1, 2, 4, 8],
-            first_conv_activation='relu',
-            n_outputs=signal_df.shape[1],
-            output_activation='linear',
-        )
+    keras_model = model.make_resnet(
+        definitions.SEQ_LENGTH,
+        groups=4,
+        blocks_per_group=3,
+        filters=256,
+        kernel_size=13,
+        dilation_rates=[1, 2, 4, 8],
+        first_conv_activation='relu',
+        n_outputs=signal_df.shape[1],
+        output_activation='linear',
+    )
 
     # Train
     #######
@@ -179,36 +183,42 @@ def train_model(
     generator_train = SeqGenerator(seqs_train, signal_train, negative_seqs_train, batch_size=batch_size)
     generator_val = SeqGenerator(seqs_val, signal_val, negative_seqs_val, batch_size=batch_size)
 
-    callbacks = [
-        tensorflow.keras.callbacks.EarlyStopping(
-            monitor='val_loss',
-            patience=2,
-            restore_best_weights=True,
-        ),
-    ]
-    if save_checkpoints:
-        callbacks.append(
-            tensorflow.keras.callbacks.ModelCheckpoint(
-                filepath=str(definitions.DEEPDANIO_MODEL_DIR / (output_name + '_checkpoint_{epoch:02d}.h5')),
+    for round_idx in range(1, n_rounds + 1):
+        print(f"Training round {round_idx}/{n_rounds}...")
+        round_name = output_name if round_idx == n_rounds else f'{output_name}_round_{round_idx}'
+
+        callbacks = [
+            tensorflow.keras.callbacks.EarlyStopping(
+                monitor='val_loss',
+                patience=2,
+                restore_best_weights=True,
+            ),
+        ]
+        if save_checkpoints:
+            callbacks.append(
+                tensorflow.keras.callbacks.ModelCheckpoint(
+                    filepath=str(definitions.DEEPDANIO_MODEL_DIR / (round_name + '_checkpoint_{epoch:02d}.h5')),
+                )
             )
+
+        # Compiling with a new optimizer resets its state
+        keras_model.compile(
+            loss=model.MSE_Cosine_Loss(w_mse=0.5, w_cosine=0.5),
+            optimizer=tensorflow.keras.optimizers.Adam(2e-4),
+        )
+        keras_model.fit(
+            x=generator_train,
+            validation_data=generator_val,
+            epochs=100,
+            shuffle=True,
+            callbacks=callbacks,
+            verbose=2,
         )
 
-    keras_model.compile(
-        loss=model.MSE_Cosine_Loss(w_mse=0.5, w_cosine=0.5),
-        optimizer=tensorflow.keras.optimizers.Adam(2e-4),
-    )
-    keras_model.fit(
-        x=generator_train,
-        validation_data=generator_val,
-        epochs=100,
-        shuffle=True,
-        callbacks=callbacks,
-        verbose=2,
-    )
-
-    output_path = definitions.DEEPDANIO_MODEL_DIR / f'{output_name}.h5'
-    keras_model.save(output_path, include_optimizer=False)
-    print(f"Model saved to {output_path}.")
+        if round_idx == n_rounds or save_intermediate:
+            round_path = definitions.DEEPDANIO_MODEL_DIR / f'{round_name}.h5'
+            keras_model.save(round_path, include_optimizer=False)
+            print(f"Model saved to {round_path}.")
 
 
 if __name__ == '__main__':
@@ -220,22 +230,27 @@ if __name__ == '__main__':
         help='Chromosome split index (0-9).',
     )
     parser.add_argument(
-        '--starting-model',
-        type=str,
-        default=None,
-        help='Path to a model to continue training from.',
+        '--n-rounds',
+        type=int,
+        default=2,
+        help='Number of training rounds, each with a new optimizer.',
     )
     parser.add_argument(
         '--output-name',
         type=str,
         default=None,
-        help='Output model name, without extension. If not provided, a default name is used.',
+        help='Output model name, without extension. Default is the model name for this split.',
     )
     parser.add_argument(
         '--seed',
         type=int,
         default=None,
         help='Random seed.',
+    )
+    parser.add_argument(
+        '--save-intermediate',
+        action='store_true',
+        help='Save the model after each round before the last.',
     )
     parser.add_argument(
         '--save-checkpoints',
@@ -246,8 +261,9 @@ if __name__ == '__main__':
 
     train_model(
         data_split_idx=args.data_split_idx,
-        starting_model_path=args.starting_model,
+        n_rounds=args.n_rounds,
         output_name=args.output_name,
         seed=args.seed,
+        save_intermediate=args.save_intermediate,
         save_checkpoints=args.save_checkpoints,
     )

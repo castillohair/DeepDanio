@@ -31,6 +31,7 @@ MODELS_DIR = REPO_ROOT / 'models'
 # DeepDanio, trained on several chromosome splits
 DEEPDANIO_MODEL_DIR = MODELS_DIR / 'deepdanio'
 DEEPDANIO_SPLITS = [0, 1, 2]
+DEEPDANIO_MODEL_NAME = 'deepdanio_split_{split}'
 DEEPDANIO_MODEL_PATHS = {
-    split: DEEPDANIO_MODEL_DIR / f'deepdanio_split_{split}.h5' for split in DEEPDANIO_SPLITS
+    split: DEEPDANIO_MODEL_DIR / f'{DEEPDANIO_MODEL_NAME.format(split=split)}.h5' for split in DEEPDANIO_SPLITS
 }
