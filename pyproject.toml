@@ -1,7 +1,25 @@
 [project]
 name = "deepdanio"
 version = "0.1.0"
-description = "Add your description here"
+description = "Deep learning models of chromatin accessibility in zebrafish embryonic development"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = []
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "biopython>=1.86",
+    "h5py>=3.10",
+    "matplotlib>=3.10.8",
+    "numpy==1.26.4",
+    "pandas>=2.3.3",
+    "prtpy>=0.8.3",
+    "scipy>=1.17.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.0",
+    "jupyter>=1.1.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

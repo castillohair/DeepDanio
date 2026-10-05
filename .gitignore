@@ -21,3 +21,4 @@ wheels/
 !/data/**/*.py
 !/data/**/*.ipynb
 !/data/**/*.md
+!/data/processed/chr_splits.json

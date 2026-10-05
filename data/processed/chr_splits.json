@@ -1,0 +1,52 @@
+[
+    {
+        "train": ["chr3", "chr15", "chr6", "chr4", "chr2", "chr14", "chr1", "chr18", "chr22", "chr16", "chr23", "chr10", "chr13", "chr19", "chr24", "chr9", "chr20", "chr25", "chr8", "chr17", "chr21"],
+        "val": ["chr5", "chr11"],
+        "test": ["chr7", "chr12"]
+    },
+    {
+        "train": ["chr7", "chr12", "chr6", "chr4", "chr2", "chr14", "chr1", "chr18", "chr22", "chr16", "chr23", "chr10", "chr13", "chr19", "chr24", "chr9", "chr20", "chr25", "chr8", "chr17", "chr21"],
+        "val": ["chr3", "chr15"],
+        "test": ["chr5", "chr11"]
+    },
+    {
+        "train": ["chr7", "chr12", "chr5", "chr11", "chr2", "chr14", "chr1", "chr18", "chr22", "chr16", "chr23", "chr10", "chr13", "chr19", "chr24", "chr9", "chr20", "chr25", "chr8", "chr17", "chr21"],
+        "val": ["chr6", "chr4"],
+        "test": ["chr3", "chr15"]
+    },
+    {
+        "train": ["chr7", "chr12", "chr5", "chr11", "chr3", "chr15", "chr1", "chr18", "chr22", "chr16", "chr23", "chr10", "chr13", "chr19", "chr24", "chr9", "chr20", "chr25", "chr8", "chr17", "chr21"],
+        "val": ["chr2", "chr14"],
+        "test": ["chr6", "chr4"]
+    },
+    {
+        "train": ["chr7", "chr12", "chr5", "chr11", "chr3", "chr15", "chr6", "chr4", "chr16", "chr23", "chr10", "chr13", "chr19", "chr24", "chr9", "chr20", "chr25", "chr8", "chr17", "chr21"],
+        "val": ["chr1", "chr18", "chr22"],
+        "test": ["chr2", "chr14"]
+    },
+    {
+        "train": ["chr7", "chr12", "chr5", "chr11", "chr3", "chr15", "chr6", "chr4", "chr2", "chr14", "chr13", "chr19", "chr24", "chr9", "chr20", "chr25", "chr8", "chr17", "chr21"],
+        "val": ["chr16", "chr23", "chr10"],
+        "test": ["chr1", "chr18", "chr22"]
+    },
+    {
+        "train": ["chr7", "chr12", "chr5", "chr11", "chr3", "chr15", "chr6", "chr4", "chr2", "chr14", "chr1", "chr18", "chr22", "chr9", "chr20", "chr25", "chr8", "chr17", "chr21"],
+        "val": ["chr13", "chr19", "chr24"],
+        "test": ["chr16", "chr23", "chr10"]
+    },
+    {
+        "train": ["chr7", "chr12", "chr5", "chr11", "chr3", "chr15", "chr6", "chr4", "chr2", "chr14", "chr1", "chr18", "chr22", "chr16", "chr23", "chr10", "chr8", "chr17", "chr21"],
+        "val": ["chr9", "chr20", "chr25"],
+        "test": ["chr13", "chr19", "chr24"]
+    },
+    {
+        "train": ["chr7", "chr12", "chr5", "chr11", "chr3", "chr15", "chr6", "chr4", "chr2", "chr14", "chr1", "chr18", "chr22", "chr16", "chr23", "chr10", "chr13", "chr19", "chr24"],
+        "val": ["chr8", "chr17", "chr21"],
+        "test": ["chr9", "chr20", "chr25"]
+    },
+    {
+        "train": ["chr5", "chr11", "chr3", "chr15", "chr6", "chr4", "chr2", "chr14", "chr1", "chr18", "chr22", "chr16", "chr23", "chr10", "chr13", "chr19", "chr24", "chr9", "chr20", "chr25"],
+        "val": ["chr7", "chr12"],
+        "test": ["chr8", "chr17", "chr21"]
+    }
+]
