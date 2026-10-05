@@ -14,3 +14,10 @@ wheels/
 
 # macOS.
 .DS_Store
+
+# Data folder: ignore all files except code and documentation
+/data/**
+!/data/**/
+!/data/**/*.py
+!/data/**/*.ipynb
+!/data/**/*.md
