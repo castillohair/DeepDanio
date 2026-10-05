@@ -22,3 +22,6 @@ wheels/
 !/data/**/*.ipynb
 !/data/**/*.md
 !/data/processed/chr_splits.json
+
+# Model weights and checkpoints
+/models/**/*.h5

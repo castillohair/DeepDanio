@@ -23,3 +23,14 @@ CHR_SPLITS_PATH = PROCESSED_DATA_DIR / 'chr_splits.json'
 
 # Length of peaks and negative regions
 SEQ_LENGTH = 500
+
+# Trained models
+################
+MODELS_DIR = REPO_ROOT / 'models'
+
+# DeepDanio, trained on several chromosome splits
+DEEPDANIO_MODEL_DIR = MODELS_DIR / 'deepdanio'
+DEEPDANIO_SPLITS = [0, 1, 2]
+DEEPDANIO_MODEL_PATHS = {
+    split: DEEPDANIO_MODEL_DIR / f'deepdanio_split_{split}.h5' for split in DEEPDANIO_SPLITS
+}
