@@ -5,6 +5,7 @@ from matplotlib import pyplot
 from matplotlib.cm import ScalarMappable
 from matplotlib.collections import LineCollection
 from matplotlib.colors import LinearSegmentedColormap, Normalize
+from matplotlib.patches import Patch
 from scipy.interpolate import CubicSpline
 
 from deepdanio import definitions
@@ -20,6 +21,17 @@ LINEAGE_COLORS = {
     'other': 'k',
 }
 
+# Lineage names for legends
+LINEAGE_LABELS = {
+    'neural ectoderm': 'Neural ectoderm',
+    'non-neural ectoderm': 'Non-neural ectoderm',
+    'mesoderm': 'Mesoderm',
+    'endoderm': 'Endoderm',
+    'ysl': 'YSL',
+    'evl': 'EVL',
+    'other': 'Other',
+}
+
 
 def bar(
         cell_state_vals,
@@ -29,13 +41,16 @@ def bar(
         stage_title_fontsize='small',
         stage_title_y_offset=0.02,
         ylim=None,
+        legend=True,
         figsize=None,
         ax=None,
     ):
     """
     Bar plot of values across cell states, grouped by stage.
 
-    Stages are separated by dashed lines and labeled above the plot.
+    Stages are separated by dashed lines and labeled above the plot. Labels
+    that would overlap the previous label are moved up to a higher row.
+    Overlaps are evaluated with the axes size at the time of plotting.
 
     Parameters
     ----------
@@ -53,9 +68,12 @@ def bar(
         Font size of stage labels.
     stage_title_y_offset : float, optional
         Vertical offset of stage labels above the plot, as a fraction of the
-        y axis range.
+        axes height. Labels stay above the plot if y limits change later.
     ylim : tuple, optional
         Y axis limits.
+    legend : bool, optional
+        Whether to show a legend of lineage colors to the right of the plot.
+        Only used with the default lineage colors.
     figsize : tuple, optional
         Figure size, if a new figure is created.
     ax : matplotlib.axes.Axes, optional
@@ -70,7 +88,8 @@ def bar(
     if cell_states is None:
         cell_states = definitions.CELL_STATES
     metadata = definitions.CELL_STATE_METADATA.loc[cell_states]
-    if cell_state_colors is None:
+    lineage_colors_used = cell_state_colors is None
+    if lineage_colors_used:
         cell_state_colors = metadata['lineage'].map(LINEAGE_COLORS).to_dict()
 
     # Bar positions, with a gap between stages
@@ -106,16 +125,41 @@ def bar(
     for x_div in x_divs:
         ax.axvline(x_div, color='k', linestyle='--', linewidth=1)
 
-    y_label = ax.get_ylim()[1] + stage_title_y_offset * (ax.get_ylim()[1] - ax.get_ylim()[0])
+    # Stage labels, with x in data coordinates and y in axes coordinates
+    stage_texts = []
     for stage_label, stage_label_x in zip(stage_labels, stage_labels_x):
-        ax.text(
+        stage_texts.append(ax.text(
             stage_label_x,
-            y_label,
+            1 + stage_title_y_offset,
             stage_label,
             horizontalalignment='center',
             verticalalignment='bottom',
             fontsize=stage_title_fontsize,
-        )
+            transform=ax.get_xaxis_transform(),
+        ))
+
+    # Move each label to the lowest row where it does not overlap the
+    # previous label in that row, measuring labels in display coordinates
+    ax.figure.canvas.draw()
+    extents = [t.get_window_extent() for t in stage_texts]
+    row_height = max(e.height for e in extents) / ax.get_window_extent().height
+    min_label_spacing = extents[0].height / 2
+    row_right_edges = []
+    for stage_text, extent in zip(stage_texts, extents):
+        row = 0
+        while row < len(row_right_edges) and extent.x0 < row_right_edges[row] + min_label_spacing:
+            row += 1
+        if row == len(row_right_edges):
+            row_right_edges.append(extent.x1)
+        else:
+            row_right_edges[row] = extent.x1
+        stage_text.set_y(1 + stage_title_y_offset + row * row_height)
+
+    # Legend with the lineages of the plotted cell states
+    if legend and lineage_colors_used:
+        lineages = [lineage for lineage in LINEAGE_COLORS if lineage in set(metadata['lineage'])]
+        handles = [Patch(color=LINEAGE_COLORS[lineage], label=LINEAGE_LABELS[lineage]) for lineage in lineages]
+        ax.legend(handles=handles, title='Lineage', loc='center left', bbox_to_anchor=(1.01, 0.5), frameon=False)
 
     return ax
 

@@ -6,10 +6,6 @@ import tensorflow
 
 from deepdanio import data, definitions, model, sequence
 
-gpus = tensorflow.config.experimental.list_physical_devices('GPU')
-for gpu in gpus:
-    tensorflow.config.experimental.set_memory_growth(gpu, True)
-
 
 class SeqGenerator(tensorflow.keras.utils.Sequence):
     """
