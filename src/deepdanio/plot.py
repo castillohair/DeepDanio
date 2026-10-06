@@ -1,3 +1,4 @@
+import logomaker
 import matplotlib
 import numpy
 import pandas
@@ -8,7 +9,7 @@ from matplotlib.colors import LinearSegmentedColormap, Normalize
 from matplotlib.patches import Patch
 from scipy.interpolate import CubicSpline
 
-from deepdanio import definitions
+from deepdanio import definitions, sequence
 
 # Default color of each lineage
 LINEAGE_COLORS = {
@@ -19,6 +20,14 @@ LINEAGE_COLORS = {
     'ysl': 'tab:pink',
     'evl': 'tab:orange',
     'other': 'k',
+}
+
+# Nucleotide colors for sequence logos
+NT_COLORS = {
+    'A': (15/255, 148/255, 71/255),
+    'C': (35/255, 63/255, 153/255),
+    'G': (245/255, 179/255, 40/255),
+    'T': (228/255, 38/255, 56/255),
 }
 
 # Lineage names for legends
@@ -337,3 +346,154 @@ def trajectory(
         ax.figure.colorbar(ScalarMappable(norm=Normalize(vmin, vmax), cmap=cmap), cax=cax, label=colorbar_label)
 
     return ax
+
+
+def sequence_logo(
+        nt_height=None,
+        pwm=None,
+        seq=None,
+        first_position=0,
+        font_name='DejaVu Sans Mono',
+        title=None,
+        figsize=None,
+        ax=None,
+    ):
+    """
+    Plot a sequence logo.
+
+    The logo is specified by nucleotide heights, a position probability matrix
+    (PWM), or a sequence, in that order of preference. PWM letter heights are
+    scaled by information content.
+
+    Parameters
+    ----------
+    nt_height : numpy.ndarray, optional
+        Nucleotide heights with shape (length, 4), e.g. contribution scores.
+    pwm : numpy.ndarray, optional
+        Position probability matrix with shape (length, 4).
+    seq : str, optional
+        Sequence.
+    first_position : int, optional
+        X coordinate of the first position.
+    font_name : str, optional
+        Font of the logo letters.
+    title : str, optional
+        Axes title.
+    figsize : tuple, optional
+        Figure size, if a new figure is created.
+    ax : matplotlib.axes.Axes, optional
+        Axes to plot on. If None, a new figure is created.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes with the plot.
+
+    """
+    if nt_height is None:
+        if pwm is not None:
+            entropy = numpy.zeros_like(pwm)
+            entropy[pwm > 0] = -pwm[pwm > 0] * numpy.log2(pwm[pwm > 0])
+            information_content = 2 - entropy.sum(axis=1, keepdims=True)
+            nt_height = pwm * information_content
+        elif seq is not None:
+            nt_height = sequence.one_hot_encode([seq])[0]
+        else:
+            raise ValueError("One of nt_height, pwm, or seq must be provided.")
+
+    if ax is None:
+        if figsize is None:
+            figsize = (len(nt_height) / 20, 0.5)
+        fig, ax = pyplot.subplots(figsize=figsize)
+
+    logo = logomaker.Logo(
+        pandas.DataFrame(
+            nt_height,
+            columns=['A', 'C', 'G', 'T'],
+            index=numpy.arange(first_position, first_position + len(nt_height)),
+        ),
+        color_scheme=NT_COLORS,
+        font_name=font_name,
+        ax=ax,
+    )
+    logo.style_spines(visible=False)
+    logo.style_spines(spines=['bottom'], visible=True, linewidth=1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    if title is not None:
+        ax.set_title(title)
+
+    return ax
+
+
+def contribution_logos(
+        seq,
+        contribs,
+        cell_states,
+        start=None,
+        end=None,
+        ylabel_orientation='horizontal',
+        figsize=None,
+    ):
+    """
+    Plot a sequence logo and its contribution scores in several cell states.
+
+    Contributions of each cell state are plotted as a logo of the actual
+    contributions (hypothetical contributions of the present bases), with a
+    common y axis.
+
+    Parameters
+    ----------
+    seq : str or numpy.ndarray
+        Sequence, or one-hot sequence with shape (seq_length, 4).
+    contribs : numpy.ndarray
+        Hypothetical contributions with shape (n_cell_states, seq_length, 4).
+    cell_states : list of str
+        Cell state of each contribution array, used as row labels.
+    start, end : int, optional
+        Region of the sequence to plot. Default is the whole sequence.
+    ylabel_orientation : {'horizontal', 'vertical'}, optional
+        Orientation of cell state labels.
+    figsize : tuple, optional
+        Figure size.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        Figure with the plot.
+
+    """
+    seq_onehot = sequence.one_hot_encode([seq])[0] if isinstance(seq, str) else numpy.asarray(seq)
+    if len(contribs) != len(cell_states):
+        raise ValueError("contribs and cell_states must have the same length.")
+    start = 0 if start is None else start
+    end = len(seq_onehot) if end is None else end
+    seq_onehot = seq_onehot[start:end]
+    actual_contribs = numpy.asarray(contribs)[:, start:end] * seq_onehot
+
+    if figsize is None:
+        figsize = (max(len(seq_onehot) / 20, 4), 0.5 + 0.5 * len(cell_states))
+    fig, axes = pyplot.subplots(1 + len(cell_states), 1, sharex=True, figsize=figsize)
+
+    sequence_logo(nt_height=seq_onehot, first_position=start, ax=axes[0])
+    axes[0].spines['bottom'].set_visible(False)
+
+    for ax, cell_state, cell_state_contribs in zip(axes[1:], cell_states, actual_contribs):
+        sequence_logo(nt_height=cell_state_contribs, first_position=start, ax=ax)
+        ax.spines['left'].set_visible(True)
+        if ylabel_orientation == 'horizontal':
+            ax.set_ylabel(cell_state, rotation=0, ha='right', va='center')
+        else:
+            ax.set_ylabel(cell_state)
+
+    # Common y limits across cell states
+    ylim = (min(ax.get_ylim()[0] for ax in axes[1:]), max(ax.get_ylim()[1] for ax in axes[1:]))
+    for ax in axes[1:]:
+        ax.set_ylim(ylim)
+        ax.yaxis.set_major_locator(matplotlib.ticker.AutoLocator())
+
+    axes[-1].set_xlim(start - 0.5, end - 0.5)
+    axes[-1].xaxis.set_major_locator(matplotlib.ticker.AutoLocator())
+    axes[-1].set_xlabel('Position (nt)')
+
+    return fig

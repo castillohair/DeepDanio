@@ -6,8 +6,12 @@ readme = "README.md"
 requires-python = ">=3.11,<3.12"
 dependencies = [
     "biopython>=1.86",
+    "deeplift>=0.6.13.0",
     "h5py>=3.10",
+    "logomaker>=0.8.7",
     "matplotlib>=3.10.8",
+    "memelite>=0.5.0",
+    "numba>=0.68.0",
     "numpy==1.26.4",
     "pandas>=2.3.3",
     "prtpy>=0.8.3",
@@ -27,6 +31,8 @@ dependencies = [
     "nvidia-cusparse-cu11==11.7.5.86 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
     "nvidia-nccl-cu11==2.16.5 ; platform_machine == 'x86_64' and sys_platform == 'linux'",
     "seaborn>=0.13.2",
+    # Custom shap version for DeepSHAP on genomic sequences (hypothetical contributions)
+    "shap",
 ]
 
 [dependency-groups]
@@ -38,3 +44,6 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+shap = { git = "https://github.com/castillohair/shap", rev = "castillohair/genomics_mod" }

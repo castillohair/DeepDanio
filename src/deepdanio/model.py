@@ -186,8 +186,9 @@ def make_model_ensemble(
     """
     Create an ensemble model from a list of Keras models.
 
-    By default, outputs are averaged across models. Outputs specified in
-    max_output_idx or min_output_idx take the maximum or minimum instead.
+    By default, outputs are averaged across models with a Keras Average layer.
+    Outputs specified in max_output_idx or min_output_idx take the maximum or
+    minimum instead.
 
     Models whose names collide are renamed in place, since Keras requires
     unique layer names within a model.
@@ -245,6 +246,10 @@ def make_model_ensemble(
         raise ValueError("All models must have the same input shape.")
     model_input = layers.Input(shape=input_shapes.pop())
     models_individual_output = [m(model_input) for m in models_list]
+
+    # Plain averaging uses an Average layer, which DeepSHAP can interpret
+    if len(avg_output_idx) == n_outputs:
+        return models.Model(model_input, layers.Average()(models_individual_output))
 
     # Combine outputs using masks for each operation
     mask_min = numpy.zeros((1, n_outputs))

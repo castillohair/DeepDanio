@@ -1,3 +1,4 @@
+import json as _json
 from pathlib import Path as _Path
 
 import pandas as _pandas
@@ -39,6 +40,10 @@ STAGES = CELL_STATE_METADATA['stage'].unique().tolist()
 TRAJECTORY_COORDS_PATH = RESOURCES_DIR / 'trajectory_coords.tsv'
 TRAJECTORY_EDGES_PATH = RESOURCES_DIR / 'trajectory_edges.tsv'
 
+# Lineage trajectories: cell states from high cells to each 6-somite cell state
+with open(RESOURCES_DIR / 'trajectories.json') as _f:
+    TRAJECTORIES = _json.load(_f)
+
 # Trained models
 ################
 MODELS_DIR = REPO_ROOT / 'models'
@@ -50,3 +55,12 @@ DEEPDANIO_MODEL_NAME = 'deepdanio_split_{split}'
 DEEPDANIO_MODEL_PATHS = {
     split: DEEPDANIO_MODEL_DIR / f'{DEEPDANIO_MODEL_NAME.format(split=split)}.h5' for split in DEEPDANIO_SPLITS
 }
+
+# Model interpretation
+######################
+# Hypothetical contribution scores of cell state-specific peaks in all cell
+# states, with shape (n_peaks, n_cell_states, SEQ_LENGTH, 4)
+CONTRIBUTIONS_PATH = DATA_DIR / 'contributions' / 'contributions.h5'
+
+# Manual annotation of TF-MoDISco motif clusters
+MOTIF_CLUSTER_NAMES_PATH = RESOURCES_DIR / 'motif_cluster_names.tsv'
