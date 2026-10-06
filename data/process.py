@@ -33,6 +33,7 @@ if __name__ == '__main__':
     cell_states = cpm_df.columns.tolist()
     print(f"{len(cpm_df):,} peaks, {len(cell_states)} cell states.")
     assert numpy.allclose(cpm_df.sum(axis=0), 1e6), "CPM columns do not sum to 1e6."
+    assert cell_states == definitions.CELL_STATES, "CPM columns do not match the cell state metadata."
 
     # Log transform, using the minimum nonzero value of each cell state as pseudocount
     cpm = cpm_df.values
@@ -74,7 +75,7 @@ if __name__ == '__main__':
     # Sampled uniformly from the genome space not within NEGATIVE_SPACING of a
     # peak, with counts per chromosome proportional to chromosome length.
     seq_len = definitions.SEQ_LENGTH
-    chrom_lengths = numpy.array([len(genome_seqs[definitions.CHROM_TO_REFSEQ[c]]) for c in chroms])
+    chrom_lengths = numpy.array([len(genome_seqs[c]) for c in chroms])
     n_negatives_per_chrom = numpy.round(N_NEGATIVES * chrom_lengths / chrom_lengths.sum()).astype(int)
 
     numpy.random.seed(NEGATIVES_RANDOM_SEED)

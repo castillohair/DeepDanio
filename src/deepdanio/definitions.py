@@ -1,5 +1,7 @@
 from pathlib import Path as _Path
 
+import pandas as _pandas
+
 # Repository root, so paths do not depend on the working directory
 REPO_ROOT = _Path(__file__).resolve().parents[2]
 DATA_DIR = REPO_ROOT / 'data'
@@ -23,6 +25,19 @@ CHR_SPLITS_PATH = PROCESSED_DATA_DIR / 'chr_splits.json'
 
 # Length of peaks and negative regions
 SEQ_LENGTH = 500
+
+# Cell states
+#############
+# Cell type, stage, and lineage of each cell state, in the order of model outputs
+RESOURCES_DIR = _Path(__file__).resolve().parent / 'resources'
+CELL_STATE_METADATA = _pandas.read_csv(RESOURCES_DIR / 'cell_state_metadata.csv', index_col='cell_state')
+CELL_STATES = CELL_STATE_METADATA.index.tolist()
+STAGES = CELL_STATE_METADATA['stage'].unique().tolist()
+
+# Cell state trajectory: plot coordinates of each cell state, and edges with
+# their probabilities
+TRAJECTORY_COORDS_PATH = RESOURCES_DIR / 'trajectory_coords.tsv'
+TRAJECTORY_EDGES_PATH = RESOURCES_DIR / 'trajectory_edges.tsv'
 
 # Trained models
 ################

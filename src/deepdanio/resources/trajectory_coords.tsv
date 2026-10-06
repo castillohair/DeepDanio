@@ -1,0 +1,96 @@
+cell_state	x	y
+high cells	0	0
+deep cells(oblong)	1	0
+evl(oblong)	1	-13
+ysl(dome)	2	-12
+apoptosis like(dome)	2	-1
+evl(dome)	2	-13
+ectoderm(dome)	2	2
+dorsal margin(dome)	2	1
+non-dorsal margin(dome)	2	0
+ectoderm(30epi)	3	2
+evl(30epi)	3	-13
+ysl(30epi)	3	-12
+non-dorsal margin(30epi)	3	0
+dorsal margin(30epi)	3	1
+apoptosis like(30epi)	3	-1
+dorsal posterior(50epi)	4	0
+dorsal ectoderm(50epi)	4	3
+ventral ectoderm(50epi)	4	2
+ventrolateral mesoendoderm(50epi)	4	-2
+ysl(50epi)	4	-12
+margin tail(50epi)	4	-1
+apoptosis like(50epi)	4	-3
+evl(50epi)	4	-13
+dorsal anterior(50epi)	4	1
+ysl(shield)	5	-12
+evl(shield)	5	-13
+margin tail(shield)	5	-1
+dorsal posterior(shield)	5	0
+dorsal ectoderm(shield)	5	3
+ventrolateral mesoderm(shield)	5	-2
+endoderm(shield)	5	-3
+ventral ectoderm(shield)	5	2
+dorsal anterior(shield)	5	1
+ysl(75epi)	6	-12
+epidermis(75epi)	6	2
+psm(75epi)	6	-3
+endoderm(75epi)	6	-5
+evl(75epi)	6	-13
+neural plate anterior(75epi)	6	4
+lateral plate mesoderm(75epi)	6	-2
+prechordal plate(75epi)	6	1
+neural plate posterior(75epi)	6	3
+margin tail(75epi)	6	-1
+notochord(75epi)	6	0
+forerunner cells(75epi)	6	-6
+adaxial cells(75epi)	6	-4
+ysl(bud)	7	-12
+psm(bud)	7	-6
+anterior neural plate border(bud)	7	2
+hatching gland(bud)	7	-1
+adaxial cells(bud)	7	-7
+dorsal diencephalon(bud)	7	8
+hindbrain(bud)	7	4
+telencephalon(bud)	7	9
+epidermis(bud)	7	1
+evl(bud)	7	-13
+posterior neural plate border(bud)	7	0
+spinal cord(bud)	7	3
+ventral diencephalon(bud)	7	6
+cephalic mesoderm(bud)	7	-5
+notochord(bud)	7	-2
+midbrain(bud)	7	5
+endoderm(bud)	7	-8
+optic primordium(bud)	7	7
+lateral plate mesoderm(bud)	7	-4
+tailbud(bud)	7	-3
+somite(6somite)	8	-9
+ysl(6somite)	8	-12
+spinal cord(6somite)	8	8
+ventral diencephalon(6somite)	8	12
+evl(6somite)	8	-13
+midbrain(6somite)	8	10
+psm(6somite)	8	-8
+posterior neural plate border(6somite)	8	0
+epidermis(6somite)	8	1
+cephalic mesoderm(6somite)	8	-7
+notochord(6somite)	8	-2
+heart field(6somite)	8	-5
+optic primordium(6somite)	8	13
+neural crest(6somite)	8	6
+neural floorplate(6somite)	8	11
+dorsal diencephalon(6somite)	8	14
+otic placode(6somite)	8	3
+pronephric duct+blood island(6somite)	8	-6
+hatching gland(6somite)	8	-1
+hindbrain(6somite)	8	9
+lens placode(6somite)	8	4
+telencephalon(6somite)	8	15
+olfactory/adenohypophyseal placode(6somite)	8	5
+differentiating neuron(6somite)	8	7
+tailbud(6somite)	8	-3
+adaxial cells(6somite)	8	-10
+ionocyte progenitors(6somite)	8	2
+endoderm(6somite)	8	-11
+endothelial progenitors(6somite)	8	-4

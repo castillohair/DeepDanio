@@ -1,0 +1,96 @@
+cell_state,cell_type,stage,lineage
+high cells,high cells,high,other
+deep cells(oblong),deep cells,oblong,other
+evl(oblong),evl,oblong,evl
+ysl(dome),ysl,dome,ysl
+apoptosis like(dome),apoptosis like,dome,other
+evl(dome),evl,dome,evl
+ectoderm(dome),ectoderm,dome,other
+dorsal margin(dome),dorsal margin,dome,mesoderm
+non-dorsal margin(dome),non-dorsal margin,dome,other
+ectoderm(30epi),ectoderm,30epi,other
+evl(30epi),evl,30epi,evl
+ysl(30epi),ysl,30epi,ysl
+non-dorsal margin(30epi),non-dorsal margin,30epi,other
+dorsal margin(30epi),dorsal margin,30epi,mesoderm
+apoptosis like(30epi),apoptosis like,30epi,other
+dorsal posterior(50epi),dorsal posterior,50epi,mesoderm
+dorsal ectoderm(50epi),dorsal ectoderm,50epi,neural ectoderm
+ventral ectoderm(50epi),ventral ectoderm,50epi,non-neural ectoderm
+ventrolateral mesoendoderm(50epi),ventrolateral mesoendoderm,50epi,other
+ysl(50epi),ysl,50epi,ysl
+margin tail(50epi),margin tail,50epi,mesoderm
+apoptosis like(50epi),apoptosis like,50epi,other
+evl(50epi),evl,50epi,evl
+dorsal anterior(50epi),dorsal anterior,50epi,mesoderm
+ysl(shield),ysl,shield,ysl
+evl(shield),evl,shield,evl
+margin tail(shield),margin tail,shield,mesoderm
+dorsal posterior(shield),dorsal posterior,shield,mesoderm
+dorsal ectoderm(shield),dorsal ectoderm,shield,neural ectoderm
+ventrolateral mesoderm(shield),ventrolateral mesoderm,shield,mesoderm
+endoderm(shield),endoderm,shield,endoderm
+ventral ectoderm(shield),ventral ectoderm,shield,non-neural ectoderm
+dorsal anterior(shield),dorsal anterior,shield,mesoderm
+ysl(75epi),ysl,75epi,ysl
+epidermis(75epi),epidermis,75epi,non-neural ectoderm
+psm(75epi),psm,75epi,mesoderm
+endoderm(75epi),endoderm,75epi,endoderm
+evl(75epi),evl,75epi,evl
+neural plate anterior(75epi),neural plate anterior,75epi,neural ectoderm
+lateral plate mesoderm(75epi),lateral plate mesoderm,75epi,mesoderm
+prechordal plate(75epi),prechordal plate,75epi,mesoderm
+neural plate posterior(75epi),neural plate posterior,75epi,neural ectoderm
+margin tail(75epi),margin tail,75epi,mesoderm
+notochord(75epi),notochord,75epi,mesoderm
+forerunner cells(75epi),forerunner cells,75epi,endoderm
+adaxial cells(75epi),adaxial cells,75epi,mesoderm
+ysl(bud),ysl,bud,ysl
+psm(bud),psm,bud,mesoderm
+anterior neural plate border(bud),anterior neural plate border,bud,non-neural ectoderm
+hatching gland(bud),hatching gland,bud,mesoderm
+adaxial cells(bud),adaxial cells,bud,mesoderm
+dorsal diencephalon(bud),dorsal diencephalon,bud,neural ectoderm
+hindbrain(bud),hindbrain,bud,neural ectoderm
+telencephalon(bud),telencephalon,bud,neural ectoderm
+epidermis(bud),epidermis,bud,non-neural ectoderm
+evl(bud),evl,bud,evl
+posterior neural plate border(bud),posterior neural plate border,bud,non-neural ectoderm
+spinal cord(bud),spinal cord,bud,neural ectoderm
+ventral diencephalon(bud),ventral diencephalon,bud,neural ectoderm
+cephalic mesoderm(bud),cephalic mesoderm,bud,mesoderm
+notochord(bud),notochord,bud,mesoderm
+midbrain(bud),midbrain,bud,neural ectoderm
+endoderm(bud),endoderm,bud,endoderm
+optic primordium(bud),optic primordium,bud,neural ectoderm
+lateral plate mesoderm(bud),lateral plate mesoderm,bud,mesoderm
+tailbud(bud),tailbud,bud,mesoderm
+somite(6somite),somite,6somite,mesoderm
+ysl(6somite),ysl,6somite,ysl
+spinal cord(6somite),spinal cord,6somite,neural ectoderm
+ventral diencephalon(6somite),ventral diencephalon,6somite,neural ectoderm
+evl(6somite),evl,6somite,evl
+midbrain(6somite),midbrain,6somite,neural ectoderm
+psm(6somite),psm,6somite,mesoderm
+posterior neural plate border(6somite),posterior neural plate border,6somite,non-neural ectoderm
+epidermis(6somite),epidermis,6somite,non-neural ectoderm
+cephalic mesoderm(6somite),cephalic mesoderm,6somite,mesoderm
+notochord(6somite),notochord,6somite,mesoderm
+heart field(6somite),heart field,6somite,mesoderm
+optic primordium(6somite),optic primordium,6somite,neural ectoderm
+neural crest(6somite),neural crest,6somite,other
+neural floorplate(6somite),neural floorplate,6somite,neural ectoderm
+dorsal diencephalon(6somite),dorsal diencephalon,6somite,neural ectoderm
+otic placode(6somite),otic placode,6somite,non-neural ectoderm
+pronephric duct+blood island(6somite),pronephric duct+blood island,6somite,mesoderm
+hatching gland(6somite),hatching gland,6somite,mesoderm
+hindbrain(6somite),hindbrain,6somite,neural ectoderm
+lens placode(6somite),lens placode,6somite,non-neural ectoderm
+telencephalon(6somite),telencephalon,6somite,neural ectoderm
+olfactory/adenohypophyseal placode(6somite),olfactory/adenohypophyseal placode,6somite,non-neural ectoderm
+differentiating neuron(6somite),differentiating neuron,6somite,neural ectoderm
+tailbud(6somite),tailbud,6somite,mesoderm
+adaxial cells(6somite),adaxial cells,6somite,mesoderm
+ionocyte progenitors(6somite),ionocyte progenitors,6somite,non-neural ectoderm
+endoderm(6somite),endoderm,6somite,endoderm
+endothelial progenitors(6somite),endothelial progenitors,6somite,mesoderm

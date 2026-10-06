@@ -1,0 +1,113 @@
+cell_state_1	cell_state_2	edge_prob
+high cells	deep cells(oblong)	1.0
+high cells	evl(oblong)	1.0
+deep cells(oblong)	apoptosis like(dome)	0.962962962962963
+deep cells(oblong)	dorsal margin(dome)	1.0
+deep cells(oblong)	ectoderm(dome)	0.997786998616874
+deep cells(oblong)	non-dorsal margin(dome)	1.0
+deep cells(oblong)	ysl(dome)	0.8
+evl(oblong)	evl(dome)	0.932307692307692
+evl(oblong)	ysl(dome)	0.2
+apoptosis like(dome)	apoptosis like(30epi)	0.96
+dorsal margin(dome)	dorsal margin(30epi)	0.669354838709677
+ectoderm(dome)	dorsal margin(30epi)	0.254838709677419
+ectoderm(dome)	ectoderm(30epi)	0.97626582278481
+evl(dome)	evl(30epi)	0.991596638655462
+non-dorsal margin(dome)	non-dorsal margin(30epi)	0.866968325791855
+ysl(dome)	ysl(30epi)	1.0
+apoptosis like(30epi)	apoptosis like(50epi)	0.843956043956044
+dorsal margin(30epi)	dorsal anterior(50epi)	0.967307692307692
+dorsal margin(30epi)	dorsal posterior(50epi)	0.681395348837209
+ectoderm(30epi)	dorsal ectoderm(50epi)	0.79615736505032
+ectoderm(30epi)	ventral ectoderm(50epi)	0.958677685950413
+evl(30epi)	evl(50epi)	1.0
+non-dorsal margin(30epi)	dorsal posterior(50epi)	0.306976744186047
+non-dorsal margin(30epi)	margin tail(50epi)	0.787205387205387
+non-dorsal margin(30epi)	ventrolateral mesoendoderm(50epi)	0.926043737574553
+ysl(30epi)	ysl(50epi)	0.934285714285714
+dorsal anterior(50epi)	dorsal anterior(shield)	0.940740740740741
+dorsal anterior(50epi)	dorsal posterior(shield)	0.201226993865031
+dorsal ectoderm(50epi)	dorsal ectoderm(shield)	0.676174682144831
+dorsal posterior(50epi)	dorsal posterior(shield)	0.791411042944785
+evl(50epi)	evl(shield)	0.96685393258427
+margin tail(50epi)	margin tail(shield)	0.764031007751938
+ventral ectoderm(50epi)	dorsal ectoderm(shield)	0.269762299613046
+ventral ectoderm(50epi)	ventral ectoderm(shield)	0.897004608294931
+ventrolateral mesoendoderm(50epi)	endoderm(shield)	0.854166666666667
+ventrolateral mesoendoderm(50epi)	ventrolateral mesoderm(shield)	0.793611111111111
+ysl(50epi)	ysl(shield)	0.983333333333333
+dorsal anterior(shield)	prechordal plate(75epi)	0.928
+dorsal ectoderm(shield)	neural plate anterior(75epi)	0.91302717900656
+dorsal ectoderm(shield)	neural plate posterior(75epi)	0.631648351648352
+dorsal posterior(shield)	notochord(75epi)	0.809210526315789
+endoderm(shield)	endoderm(75epi)	0.997979797979798
+endoderm(shield)	forerunner cells(75epi)	1.0
+evl(shield)	evl(75epi)	0.993814432989691
+margin tail(shield)	margin tail(75epi)	0.931775700934579
+ventral ectoderm(shield)	epidermis(75epi)	0.790493601462523
+ventrolateral mesoderm(shield)	adaxial cells(75epi)	1.0
+ventrolateral mesoderm(shield)	lateral plate mesoderm(75epi)	0.968702290076336
+ventrolateral mesoderm(shield)	psm(75epi)	0.90625
+ysl(shield)	ysl(75epi)	0.983132530120482
+adaxial cells(75epi)	adaxial cells(bud)	0.417094017094017
+endoderm(75epi)	endoderm(bud)	0.918110236220472
+epidermis(75epi)	anterior neural plate border(bud)	0.619178082191781
+epidermis(75epi)	epidermis(bud)	1.0
+epidermis(75epi)	posterior neural plate border(bud)	0.614164305949009
+evl(75epi)	evl(bud)	1.0
+lateral plate mesoderm(75epi)	cephalic mesoderm(bud)	0.819277108433735
+lateral plate mesoderm(75epi)	lateral plate mesoderm(bud)	1.0
+lateral plate mesoderm(75epi)	psm(bud)	0.293870402802102
+margin tail(75epi)	posterior neural plate border(bud)	0.251558073654391
+margin tail(75epi)	tailbud(bud)	0.795762711864407
+neural plate anterior(75epi)	anterior neural plate border(bud)	0.35013698630137
+neural plate anterior(75epi)	dorsal diencephalon(bud)	0.918954248366013
+neural plate anterior(75epi)	hindbrain(bud)	0.363573883161512
+neural plate anterior(75epi)	midbrain(bud)	0.839525691699605
+neural plate anterior(75epi)	optic primordium(bud)	0.999465240641711
+neural plate anterior(75epi)	telencephalon(bud)	0.909090909090909
+neural plate anterior(75epi)	ventral diencephalon(bud)	0.938461538461538
+neural plate posterior(75epi)	hindbrain(bud)	0.625429553264605
+neural plate posterior(75epi)	spinal cord(bud)	0.729287598944591
+notochord(75epi)	notochord(bud)	1.0
+prechordal plate(75epi)	hatching gland(bud)	1.0
+psm(75epi)	adaxial cells(bud)	0.379487179487179
+psm(75epi)	psm(bud)	0.496672504378284
+ysl(75epi)	ysl(bud)	1.0
+adaxial cells(bud)	adaxial cells(6somite)	0.972727272727273
+anterior neural plate border(bud)	ionocyte progenitors(6somite)	0.522222222222222
+anterior neural plate border(bud)	lens placode(6somite)	0.5375
+anterior neural plate border(bud)	neural crest(6somite)	0.401754385964912
+anterior neural plate border(bud)	olfactory/adenohypophyseal placode(6somite)	0.515121951219512
+anterior neural plate border(bud)	otic placode(6somite)	0.960606060606061
+cephalic mesoderm(bud)	cephalic mesoderm(6somite)	0.975342465753425
+dorsal diencephalon(bud)	dorsal diencephalon(6somite)	0.404081632653061
+endoderm(bud)	endoderm(6somite)	0.982945736434109
+epidermis(bud)	epidermis(6somite)	0.8424
+epidermis(bud)	ionocyte progenitors(6somite)	0.461111111111111
+epidermis(bud)	lens placode(6somite)	0.428571428571429
+epidermis(bud)	posterior neural plate border(6somite)	0.23342175066313
+evl(bud)	evl(6somite)	1.0
+hatching gland(bud)	hatching gland(6somite)	1.0
+hindbrain(bud)	hindbrain(6somite)	0.801423487544484
+hindbrain(bud)	neural crest(6somite)	0.256140350877193
+lateral plate mesoderm(bud)	endothelial progenitors(6somite)	1.0
+lateral plate mesoderm(bud)	heart field(6somite)	0.933953488372093
+lateral plate mesoderm(bud)	pronephric duct+blood island(6somite)	0.846846846846847
+midbrain(bud)	midbrain(6somite)	0.607142857142857
+notochord(bud)	notochord(6somite)	0.909090909090909
+optic primordium(bud)	dorsal diencephalon(6somite)	0.280272108843537
+optic primordium(bud)	optic primordium(6somite)	0.940603248259861
+optic primordium(bud)	telencephalon(6somite)	0.385526315789474
+posterior neural plate border(bud)	posterior neural plate border(6somite)	0.680106100795756
+psm(bud)	psm(6somite)	0.745228215767635
+psm(bud)	somite(6somite)	0.96425702811245
+spinal cord(bud)	differentiating neuron(6somite)	0.594285714285714
+spinal cord(bud)	neural crest(6somite)	0.333333333333333
+spinal cord(bud)	spinal cord(6somite)	0.769842931937173
+tailbud(bud)	tailbud(6somite)	0.796685082872928
+telencephalon(bud)	olfactory/adenohypophyseal placode(6somite)	0.470243902439024
+telencephalon(bud)	telencephalon(6somite)	0.452631578947368
+ventral diencephalon(bud)	neural floorplate(6somite)	0.926086956521739
+ventral diencephalon(bud)	ventral diencephalon(6somite)	0.917647058823529
+ysl(bud)	ysl(6somite)	1.0

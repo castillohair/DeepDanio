@@ -1,3 +1,4 @@
+import numpy
 import tensorflow
 from tensorflow.keras import layers
 from tensorflow.keras import models
@@ -174,6 +175,95 @@ def load_model(model_path):
 
     """
     return tensorflow.keras.models.load_model(model_path, compile=False)
+
+
+def make_model_ensemble(
+        models_list,
+        max_output_idx=None,
+        min_output_idx=None,
+        avg_output_idx=None,
+    ):
+    """
+    Create an ensemble model from a list of Keras models.
+
+    By default, outputs are averaged across models. Outputs specified in
+    max_output_idx or min_output_idx take the maximum or minimum instead.
+
+    Models whose names collide are renamed in place, since Keras requires
+    unique layer names within a model.
+
+    Parameters
+    ----------
+    models_list : list of tensorflow.keras.Model or list of str
+        Keras models, or paths to saved Keras models.
+    max_output_idx : list of int, optional
+        Indices of outputs to take the maximum across models.
+    min_output_idx : list of int, optional
+        Indices of outputs to take the minimum across models.
+    avg_output_idx : list of int, optional
+        Indices of outputs to average across models. Default is all outputs
+        not in max_output_idx or min_output_idx.
+
+    Returns
+    -------
+    tensorflow.keras.Model
+        Ensemble model.
+
+    Raises
+    ------
+    ValueError
+        If the models have different input or output shapes.
+
+    """
+    if not isinstance(models_list[0], tensorflow.keras.Model):
+        models_list = [load_model(m) for m in models_list]
+
+    model_names = [m.name for m in models_list]
+    if len(set(model_names)) != len(model_names):
+        for model_idx, member_model in enumerate(models_list):
+            member_model._name = f'ensemble_member_{model_idx}'
+
+    output_shapes = set(m.output_shape for m in models_list)
+    if len(output_shapes) != 1:
+        raise ValueError("All models must have the same output shape.")
+    n_outputs = output_shapes.pop()[-1]
+
+    # Output indices for each operation
+    if avg_output_idx is None:
+        avg_output_idx = list(range(n_outputs))
+    if max_output_idx is None:
+        max_output_idx = []
+    else:
+        avg_output_idx = [i for i in avg_output_idx if i not in max_output_idx]
+    if min_output_idx is None:
+        min_output_idx = []
+    else:
+        avg_output_idx = [i for i in avg_output_idx if i not in min_output_idx]
+
+    input_shapes = set(m.input_shape[1:] for m in models_list)
+    if len(input_shapes) != 1:
+        raise ValueError("All models must have the same input shape.")
+    model_input = layers.Input(shape=input_shapes.pop())
+    models_individual_output = [m(model_input) for m in models_list]
+
+    # Combine outputs using masks for each operation
+    mask_min = numpy.zeros((1, n_outputs))
+    mask_min[:, min_output_idx] = 1
+    mask_min = tensorflow.cast(mask_min, tensorflow.float32)
+    mask_max = numpy.zeros((1, n_outputs))
+    mask_max[:, max_output_idx] = 1
+    mask_max = tensorflow.cast(mask_max, tensorflow.float32)
+    mask_avg = numpy.zeros((1, n_outputs))
+    mask_avg[:, avg_output_idx] = 1
+    mask_avg = tensorflow.cast(mask_avg, tensorflow.float32)
+    select_output_layer = layers.Lambda(
+        lambda x: tensorflow.reduce_min(tensorflow.stack(x, axis=-1), axis=-1) * mask_min
+            + tensorflow.reduce_max(tensorflow.stack(x, axis=-1), axis=-1) * mask_max
+            + tensorflow.reduce_mean(tensorflow.stack(x, axis=-1), axis=-1) * mask_avg,
+    )
+    model_ensemble_output = select_output_layer(models_individual_output)
+
+    return models.Model(model_input, model_ensemble_output)
 
 
 class MSE_Cosine_Loss(tensorflow.keras.losses.Loss):
