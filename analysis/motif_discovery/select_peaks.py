@@ -11,7 +11,7 @@ cell states.
 Outputs:
 - Ensemble predictions of all peaks, with datasets 'peak_id' and 'pred'
   (n_peaks, n_cell_states). Reused if present.
-  Predicting takes about 25 minutes on a g5.xlarge instance.
+  Predicting takes about 25 minutes on an NVIDIA A10G GPU.
 - The selected peaks table, with columns 'cell_state', 'peak_id', 'rank'
   (0-based), 'specificity', and 'mse'.
 

@@ -160,7 +160,7 @@ def load_hypothetical_contributions(cell_state, peak_ids=None, dirpath=definitio
         raise FileNotFoundError(
             f"Hypothetical contributions of {cell_state} not found at {filepath}. These files are not "
             "publicly available due to their size. They can be computed with "
-            "analysis/contributions/compute_contributions.py, or requested from the authors."
+            "analysis/motif_discovery/compute_contributions.py, or requested from the authors."
         )
 
     with h5py.File(filepath, 'r') as f:

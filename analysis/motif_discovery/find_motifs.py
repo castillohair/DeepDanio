@@ -1,5 +1,5 @@
 """
-Discover motifs in the selected peaks of one cell state, and find their matches.
+Discover motifs in the selected peaks of one cell state.
 
 1. Motif discovery: TF-MoDISco is run on the hypothetical contributions of the
    peaks selected in the cell state, in order of decreasing specificity, within
@@ -9,24 +9,18 @@ Discover motifs in the selected peaks of one cell state, and find their matches.
 2. Motif extraction: the CWM and PWM of each pattern are trimmed to positions
    with a total absolute contribution of at least TRIM_THRESHOLD times the
    maximum, plus TRIM_FLANK positions on each side. Seqlets are mapped to
-   positions in their peaks, and scored against their trimmed motif as in the
-   following step.
-3. Motif scanning: the selected peaks are scanned for matches to each trimmed
-   motif using actual contributions. A match requires a CWM similarity of at
-   least the MATCH_QUANTILE quantile of the motif's seqlets, a total absolute
-   contribution of at least the minimum of the motif's seqlets, and a mean PWM
-   probability of at least 0.25.
+   positions in their peaks, and scored against their trimmed motif by CWM
+   similarity, total absolute contribution, and mean PWM probability.
 
-Inputs are the selected peaks, the training data sequences, and the
-contributions. The cell state's hypothetical contributions are only needed to
-run TF-MoDISco.
+Inputs are the selected peaks and the training data sequences. The cell
+state's hypothetical contributions are only needed to run TF-MoDISco.
 
 Outputs are saved in '{motifs_dir}/{cell_state_idx:02d}/': TF-MoDISco results
 ('modisco_results.h5'), trimmed CWMs and PWMs ('cwm_trimmed.meme',
-'pwm_trimmed.meme') with motif IDs '{pos/neg}_patterns_pattern_{idx}', and
-tables of seqlets and matches ('seqlets.tsv', 'motif_matches.tsv') with columns
-'motif', 'peak_id', 'start', 'end' (0-based, exclusive), 'revcomp',
-'cwm_contrib', 'cwm_match', and 'pwm_prob'.
+'pwm_trimmed.meme') with motif IDs '{pos/neg}_patterns_pattern_{idx}', and a
+table of seqlets ('seqlets.tsv') with columns 'motif', 'peak_id', 'start',
+'end' (0-based, exclusive), 'revcomp', 'cwm_contrib', 'cwm_match', and
+'pwm_prob'.
 
 """
 import argparse
@@ -50,9 +44,6 @@ MODISCO_KWARGS = dict(sliding_window_size=20, flank_size=5, target_seqlet_fdr=0.
 # Motif trimming
 TRIM_THRESHOLD = 0.3
 TRIM_FLANK = 4
-
-# Quantile of seqlet CWM match scores used as match threshold
-MATCH_QUANTILE = 0.2
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -171,30 +162,4 @@ if __name__ == '__main__':
     motif.save_meme(cwms, output_dir / definitions.CWM_NAME, nsites=nsites)
     motif.save_meme(pwms, output_dir / definitions.PWM_NAME, nsites=nsites)
     seqlets_df.to_csv(output_dir / definitions.SEQLETS_NAME, sep='\t', index=False)
-    print(f"Extracted {len(cwms)} motifs and {len(seqlets_df):,} seqlets.")
-
-    # Motif scanning
-    ################
-    print("Scanning motifs...")
-    # Motifs as saved, so that scanning with the saved files gives the same results
-    cwms = motif.load_meme(output_dir / definitions.CWM_NAME)
-    pwms = motif.load_meme(output_dir / definitions.PWM_NAME)
-    # Actual contributions with shape (n_peaks, seq_length, 1)
-    contribs = data.load_contributions(peak_ids, [cell_state])[:, 0, :, None]
-    match_dfs = []
-    for motif_id in cwms:
-        motif_seqlets_df = seqlets_df[seqlets_df['motif'] == motif_id]
-        match_df = interpret.scan_cwm(
-            peak_ids,
-            seqs_onehot,
-            contribs,
-            cwms[motif_id],
-            pwms[motif_id],
-            match_threshold=motif_seqlets_df['cwm_match'].quantile(MATCH_QUANTILE),
-            contrib_threshold=motif_seqlets_df['cwm_contrib'].min(),
-        )
-        match_df.insert(0, 'motif', motif_id)
-        match_dfs.append(match_df)
-    match_df = pandas.concat(match_dfs, ignore_index=True).rename(columns={'seq_id': 'peak_id'})
-    match_df.to_csv(output_dir / definitions.MOTIF_MATCHES_NAME, sep='\t', index=False)
-    print(f"Found {len(match_df):,} matches. Results saved to {output_dir}.")
+    print(f"Extracted {len(cwms)} motifs and {len(seqlets_df):,} seqlets. Results saved to {output_dir}.")

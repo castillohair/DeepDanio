@@ -26,8 +26,8 @@ The list of cell states predicted by DeepDanio, along with their cell type, deve
   - `deepdanio/train.py`: trains a model on one data split.
 - **[`analysis`](./analysis/)**: analyses of trained models.
   - `model_performance/`: prediction performance on held-out chromosomes.
-  - `contributions/`: selection of cell state-specific peaks and calculation of their contribution scores (DeepSHAP). See the folder's [README](./analysis/contributions/README.md) for more information.
-  - `motifs/`: motif discovery (TF-MoDISco), clustering across cell states, and motif contributions along differentiation paths. See the folder's [README](./analysis/motifs/README.md) for more information.
+  - `motif_discovery/`: selection of cell state-specific peaks, calculation of their contribution scores (DeepSHAP), motif discovery (TF-MoDISco), and motif clustering across cell states. See the folder's [README](./analysis/motif_discovery/README.md) for more information.
+  - `motif_contributions/`: motif scanning in cell state-specific peaks, and motif contributions along differentiation paths. See the folder's [README](./analysis/motif_contributions/README.md) for more information.
 
 ## Models
 
@@ -82,7 +82,7 @@ Run `analysis/model_performance/predict.py` to predict the validation and test c
 Download the precomputed contribution scores and the processed training data:
 
 ```
-python analysis/contributions/download_contributions.py
+python analysis/motif_discovery/download_results.py
 python data/download_data.py
 ```
 
@@ -112,13 +112,13 @@ contribs = (hyp_contribs * seqs_onehot).sum(axis=-1)  # shape (n_seqs, 500)
 
 ### Reproducing contribution and motif analyses
 
-See [`analysis/contributions`](./analysis/contributions/) and then [`analysis/motifs`](./analysis/motifs/). Precomputed results can be downloaded with `download_contributions.py` and `download_motifs.py` in those folders.
+See [`analysis/motif_discovery`](./analysis/motif_discovery/) and then [`analysis/motif_contributions`](./analysis/motif_contributions/). Precomputed results can be downloaded with `download_results.py` and `download_matches.py` in those folders.
 
 ## Requirements
 
 ### Hardware requirements
 
-Model training and computing contribution scores at scale require an NVIDIA GPU. Predictions and contributions of a small number of sequences can be computed on a regular CPU. Motif discovery runs on CPU, and motif clustering requires R (see [`analysis/motifs`](./analysis/motifs/)).
+Model training and computing contribution scores at scale require an NVIDIA GPU. Predictions and contributions of a small number of sequences can be computed on a regular CPU. Motif discovery runs on CPU, and motif clustering requires R (see [`analysis/motif_discovery`](./analysis/motif_discovery/)).
 
 ### Software requirements
 
