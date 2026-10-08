@@ -32,15 +32,11 @@ Runs TF-MoDISco on one cell state, given by name or index, extracts trimmed moti
 python analysis/motifs/find_motifs.py --cell-state 91
 ```
 
-This requires the selected peaks and contributions (see [`analysis/contributions`](../contributions/)), and the processed training data. TF-MoDISco is skipped if `modisco_results.h5` is already present in the cell state's folder, in which case the script takes about 2.5 minutes on a CPU. Otherwise, it also requires the cell state's hypothetical contributions, which only need to include the cell state's own selected peaks (`compute_contributions.py --cell-state-peaks-only`). TF-MoDISco takes 30 to 60 minutes per cell state with 4 CPU threads on an AWS c5.4xlarge instance, and about 2 GB of memory.
+This requires the selected peaks and contributions (see [`analysis/contributions`](../contributions/)), and the processed training data. TF-MoDISco is skipped if `modisco_results.h5` is already present in the cell state's folder. Otherwise, it also requires the cell state's hypothetical contributions, which only need to include the cell state's own selected peaks (`compute_contributions.py --cell-state-peaks-only`).
 
-To process all cell states:
+Motif extraction and scanning run on a single CPU core and take about 15 to 30 minutes per cell state, with about 1.3 GB of memory. TF-MoDISco adds 30 to 60 minutes per cell state with 4 CPU threads on an AWS c5.4xlarge instance, and needs about 2 GB of memory. Cell states are independent, so we recommend processing them in parallel.
 
-```shell
-for i in $(seq 0 94); do python analysis/motifs/find_motifs.py --cell-state $i; done
-```
-
-Rerunning TF-MoDISco reproduces the released results exactly, but only with `leidenalg` versions before 0.12 (0.11 is pinned in `pyproject.toml`). Version 0.12 changes the Leiden clustering, and therefore the motifs found.
+Rerunning the script reproduces the released results.
 
 ### Motif clustering
 

@@ -2,23 +2,31 @@
 Discover motifs in the selected peaks of one cell state, and find their matches.
 
 1. Motif discovery: TF-MoDISco is run on the hypothetical contributions of the
-   peaks selected in the cell state, in order of decreasing specificity. This
-   step is skipped if TF-MoDISco results are already present.
+   peaks selected in the cell state, in order of decreasing specificity, within
+   the central MODISCO_WINDOW positions. This step is skipped if TF-MoDISco
+   results are already present. Reproducing the released results requires
+   leidenalg < 0.12.
 2. Motif extraction: the CWM and PWM of each pattern are trimmed to positions
    with a total absolute contribution of at least TRIM_THRESHOLD times the
-   maximum, plus TRIM_FLANK positions on each side, and saved as MEME files.
-   Seqlets are mapped to positions in their peaks, and scored against their
-   trimmed motif as in the following step.
-3. Motif scanning: peaks are scanned for matches to each trimmed motif using
-   actual contributions. A match requires a CWM match score of at least the
-   MATCH_QUANTILE quantile of the motif's seqlets, a total absolute
+   maximum, plus TRIM_FLANK positions on each side. Seqlets are mapped to
+   positions in their peaks, and scored against their trimmed motif as in the
+   following step.
+3. Motif scanning: the selected peaks are scanned for matches to each trimmed
+   motif using actual contributions. A match requires a CWM similarity of at
+   least the MATCH_QUANTILE quantile of the motif's seqlets, a total absolute
    contribution of at least the minimum of the motif's seqlets, and a mean PWM
    probability of at least 0.25.
 
-Outputs are saved in the cell state's motif directory: TF-MoDISco results,
-trimmed CWMs and PWMs with motif IDs '{pos/neg}_patterns_pattern_{idx}', and
-tables of seqlets and matches with columns 'motif', 'peak_id', 'start', 'end'
-(0-based, exclusive), 'revcomp', 'cwm_contrib', 'cwm_match', and 'pwm_prob'.
+Inputs are the selected peaks, the training data sequences, and the
+contributions. The cell state's hypothetical contributions are only needed to
+run TF-MoDISco.
+
+Outputs are saved in '{motifs_dir}/{cell_state_idx:02d}/': TF-MoDISco results
+('modisco_results.h5'), trimmed CWMs and PWMs ('cwm_trimmed.meme',
+'pwm_trimmed.meme') with motif IDs '{pos/neg}_patterns_pattern_{idx}', and
+tables of seqlets and matches ('seqlets.tsv', 'motif_matches.tsv') with columns
+'motif', 'peak_id', 'start', 'end' (0-based, exclusive), 'revcomp',
+'cwm_contrib', 'cwm_match', and 'pwm_prob'.
 
 """
 import argparse
