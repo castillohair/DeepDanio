@@ -108,7 +108,7 @@ hyp_contribs = interpret.compute_contributions(keras_model, seqs_onehot, definit
 contribs = (hyp_contribs * seqs_onehot).sum(axis=-1)  # shape (n_seqs, 500)
 ```
 
-`hyp_contribs` are hypothetical contributions, i.e. the contributions each of the four bases would have at each position, with shape (n_seqs, 500, 4). Computing contributions takes about 0.2 seconds per sequence and cell state on a GPU, so a small number of sequences can be run on a CPU.
+`hyp_contribs` are hypothetical contributions, i.e. the contributions each of the four bases would have at each position, with shape (n_seqs, 500, 4). Computing contributions takes about 0.2 seconds per sequence and cell state on a GPU, and about 17 seconds on 4 CPU cores, so only a small number of sequences can be run on a CPU.
 
 ### Reproducing contribution and motif analyses
 

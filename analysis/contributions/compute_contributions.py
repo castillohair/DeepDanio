@@ -1,28 +1,24 @@
 """
-Compute contribution scores of selected peaks.
+Compute DeepSHAP contribution scores of peaks.
 
-With --cell-state, hypothetical contributions are computed in one cell state
-with DeepSHAP, on the ensemble of the models trained on all chromosome splits
-and using dinucleotide-shuffled references. By default, all selected peaks are
-used, i.e. peaks selected in any cell state. Alternatively, contributions can
-be restricted to the peaks selected in the cell state being interpreted, which
-are the input for motif discovery, or computed on a list of peaks from the
-training data, selected or not. The output is one file per cell state in the
-hypothetical contributions directory, with datasets 'peak_id' and
+With --cell-state, hypothetical contributions are computed in one cell state,
+using the ensemble of models from all chromosome splits and
+dinucleotide-shuffled references. By default, peaks selected in any cell state
+are used. Alternatively, --cell-state-peaks-only uses only the peaks selected
+in the cell state being interpreted, and --peak-ids any list of peaks from the
+training data. The output, one file per cell state, has datasets 'peak_id' and
 'contributions' with shape (n_peaks, seq_length, 4), and attribute
-'cell_state'. Peaks are in the order of the training data.
-Results are saved every BLOCK_SIZE peaks to a temporary file, from which
-interrupted runs resume, and which is renamed when complete.
+'cell_state', with peaks in training data order. Progress is saved every
+BLOCK_SIZE peaks to a temporary file, from which interrupted runs resume.
 
 With --combine, hypothetical contributions of all cell states, which must
-contain the same peaks, are combined into the actual contributions file:
-contributions of the bases present in each sequence, with datasets 'peak_id',
+contain the same peaks, are converted to actual contributions (those of the
+bases present in each sequence) and saved to one file with datasets 'peak_id',
 'cell_state', and 'contributions' with shape (n_peaks, n_cell_states,
 seq_length).
 
-TF32 is disabled on GPUs that support it, for full float32 precision as in the
-original contributions. Recomputed contributions match the original ones to
-about 1e-5.
+Recomputed contributions differ from the released ones by about 1e-6 on
+average.
 
 """
 import argparse
@@ -32,7 +28,6 @@ from pathlib import Path
 import h5py
 import numpy
 import pandas
-import tensorflow
 
 from deepdanio import data, definitions, interpret, model, sequence
 
@@ -221,5 +216,4 @@ if __name__ == '__main__':
     if args.combine:
         combine(args.hypothetical_dir, args.output)
     else:
-        tensorflow.config.experimental.enable_tensor_float_32_execution(False)
         compute_cell_state(args.cell_state, args.hypothetical_dir, args.cell_state_peaks_only, args.peak_ids)

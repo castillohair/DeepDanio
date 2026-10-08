@@ -55,14 +55,14 @@ With `--cell-state`, hypothetical contributions of all selected peaks are comput
 python analysis/contributions/compute_contributions.py --cell-state 91
 ```
 
-This produces `data/contributions/hypothetical/91.h5`, with datasets `peak_id` and `contributions` with shape (162,262, 500, 4). Each cell state takes about 9 GPU-hours, so we recommend running cell states in parallel on separate GPUs. Progress is saved every 1,000 peaks to a `.partial` file, from which interrupted runs resume.
+This produces `data/contributions/hypothetical/91.h5`, with datasets `peak_id` and `contributions` with shape (162,262, 500, 4). Each cell state takes about 9 hours on an NVIDIA A10G GPU (AWS g5.xlarge instance), so we recommend running cell states in parallel on separate GPUs. Progress is saved every 1,000 peaks to a `.partial` file, from which interrupted runs resume.
 
 Options:
 
-- `--cell-state-peaks-only`: only compute contributions of the 10,000 peaks selected in the cell state. These are sufficient for motif discovery in that cell state (see [`analysis/motifs`](../motifs/)).
+- `--cell-state-peaks-only`: only compute contributions of the 10,000 peaks selected in the cell state, which takes about 35 minutes.
 - `--peak-ids`: compute contributions of any peaks in the training data, listed one per line in a text file. Requires `--hypothetical-dir`, to avoid mixing these results with those of the selected peaks.
 
-Recomputed contributions match the released ones to about 1e-5.
+Recomputed contributions differ from the released ones by about 1e-6 on average, and GPU and CPU results by about 1e-8.
 
 ### Combining contributions
 
