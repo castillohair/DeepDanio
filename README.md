@@ -136,7 +136,7 @@ This repo requires Python 3.11. Dependencies are declared in `pyproject.toml` an
 
 ## Installation guide
 
-We recommend using [uv](https://docs.astral.sh/uv/). To download the repository and install all requirements run the following:
+We recommend using [uv](https://docs.astral.sh/uv/), which can be installed with `curl -LsSf https://astral.sh/uv/install.sh | sh` (make sure `uv` is in your `PATH` afterwards). To download the repository and install all requirements run the following:
 
 ```
 git clone https://github.com/castillohair/DeepDanio

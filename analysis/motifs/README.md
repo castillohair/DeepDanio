@@ -49,7 +49,7 @@ usage: cluster_motifs.py [-h] [--motifs-dir MOTIFS_DIR]
 
 Selects the top 10 motifs of each cell state and clusters them with [matrix-clustering](https://github.com/jaimicore/matrix-clustering_stand-alone) from RSAT, using complete linkage and a normalized correlation threshold of 0.55. Results are saved in `data/motifs/clustering/`.
 
-matrix-clustering requires R. The released clustering was reproduced exactly with R 4.3.3 and matrix-clustering commit `a749c3f`; commits before February 22, 2024 give different clusters. To install it:
+matrix-clustering requires R. The released clustering can be reproduced exactly with R 4.5.3 and matrix-clustering commit `a749c3f`; commits before February 22, 2024 give different clusters. To install it:
 
 ```shell
 git clone https://github.com/jaimicore/matrix-clustering_stand-alone
@@ -70,13 +70,13 @@ install.packages(c(
 BiocManager::install(c("universalmotif", "ComplexHeatmap"))
 ```
 
-On Ubuntu, [Posit Package Manager](https://packagemanager.posit.co/) provides precompiled R packages, which install much faster. Then run:
+Depending on the Linux environment, some R packages may require the following system libraries to compile: libcurl, OpenSSL, libuv, fontconfig, FreeType, HarfBuzz, FriBidi, and libpng. On Ubuntu, [Posit Package Manager](https://packagemanager.posit.co/) provides precompiled R packages, which install much faster. Then run:
 
 ```shell
 python analysis/motifs/cluster_motifs.py --matrix-clustering path/to/matrix-clustering_stand-alone/matrix-clustering.R
 ```
 
-matrix-clustering must be run with one thread (the default `--n-threads 1`), as it fails with more threads with current R package versions. Without `--matrix-clustering`, the script writes the matrix-clustering inputs and prints the command to run it, so that clustering can be done on another machine. Once the results are copied to `data/motifs/clustering/`, rerunning the script processes them.
+matrix-clustering must be run with one thread (the default `--n-threads 1`), as it fails with more threads with current R package versions. It takes about 15 minutes. Without `--matrix-clustering`, the script writes the matrix-clustering inputs and prints the command to run it, so that clustering can be done on another machine. Once the results are copied to `data/motifs/clustering/`, rerunning the script processes them.
 
 ### Motif contributions
 
