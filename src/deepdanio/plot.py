@@ -438,16 +438,16 @@ def contribution_logos(
     """
     Plot a sequence logo and its contribution scores in several cell states.
 
-    Contributions of each cell state are plotted as a logo of the actual
-    contributions (hypothetical contributions of the present bases), with a
-    common y axis.
+    Contributions of each cell state are plotted as a logo with the actual
+    contribution of each present base as its height, with a common y axis.
 
     Parameters
     ----------
     seq : str or numpy.ndarray
         Sequence, or one-hot sequence with shape (seq_length, 4).
     contribs : numpy.ndarray
-        Hypothetical contributions with shape (n_cell_states, seq_length, 4).
+        Actual contributions with shape (n_cell_states, seq_length), or
+        hypothetical contributions with shape (n_cell_states, seq_length, 4).
     cell_states : list of str
         Cell state of each contribution array, used as row labels.
     start, end : int, optional
@@ -469,7 +469,10 @@ def contribution_logos(
     start = 0 if start is None else start
     end = len(seq_onehot) if end is None else end
     seq_onehot = seq_onehot[start:end]
-    actual_contribs = numpy.asarray(contribs)[:, start:end] * seq_onehot
+    contribs = numpy.asarray(contribs)[:, start:end]
+    if contribs.ndim == 2:
+        contribs = contribs[..., None]
+    nt_heights = contribs * seq_onehot
 
     if figsize is None:
         figsize = (max(len(seq_onehot) / 20, 4), 0.5 + 0.5 * len(cell_states))
@@ -478,8 +481,8 @@ def contribution_logos(
     sequence_logo(nt_height=seq_onehot, first_position=start, ax=axes[0])
     axes[0].spines['bottom'].set_visible(False)
 
-    for ax, cell_state, cell_state_contribs in zip(axes[1:], cell_states, actual_contribs):
-        sequence_logo(nt_height=cell_state_contribs, first_position=start, ax=ax)
+    for ax, cell_state, cell_state_nt_height in zip(axes[1:], cell_states, nt_heights):
+        sequence_logo(nt_height=cell_state_nt_height, first_position=start, ax=ax)
         ax.spines['left'].set_visible(True)
         if ylabel_orientation == 'horizontal':
             ax.set_ylabel(cell_state, rotation=0, ha='right', va='center')

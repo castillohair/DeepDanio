@@ -28,3 +28,4 @@ wheels/
 
 # Analysis outputs
 /analysis/**/*.h5
+/analysis/**/results/

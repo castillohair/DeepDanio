@@ -1,6 +1,6 @@
 # DeepDanio
 
-**Predict chromatin accessibility across 95 zebrafish embryonic cell states.** DeepDanio is a deep learning model trained on pseudobulk single-cell ATAC-seq data from zebrafish embryogenesis, covering cell states from the high stage to the 6-somite stage. This repository contains code associated with our [preprint](https://doi.org/10.1101/2024.08.27.609971), and contains code to make predictions, reproduce model training, and evaluate model performance.
+**Predict chromatin accessibility across 95 zebrafish embryonic cell states.** DeepDanio is a deep learning model trained on pseudobulk single-cell ATAC-seq data from zebrafish embryogenesis, covering cell states from the high stage to the 6-somite stage. This repository contains code associated with our [preprint](https://doi.org/10.1101/2024.08.27.609971). It can be used to make predictions with pretrained models, reproduce model training, evaluate model performance, and analyze contribution scores and sequence motifs.
 
 The list of cell states predicted by DeepDanio, along with their cell type, developmental stage, and lineage, can be found [here](./src/deepdanio/resources/cell_state_metadata.csv).
 
@@ -12,10 +12,11 @@ The list of cell states predicted by DeepDanio, along with their cell type, deve
   - `model.py`: model architecture, loading of trained models, and model ensembles.
   - `metrics.py`: prediction performance metrics.
   - `interpret.py`, `motif.py`: contribution scores (DeepSHAP), motif scanning, and motif file handling.
-  - `plot.py`: plots of values across cell states, grouped by stage or along the differentiation trajectory, and sequence logos.
-  - `resources/`: cell state metadata, differentiation trajectory layout, and motif annotations.
+  - `plot.py`: plots of values across cell states, grouped by stage or along the differentiation trajectory, and sequence and contribution logos.
+  - `resources/`: cell state metadata, and differentiation trajectory layout and paths.
 - **[`examples`](./examples/)**: notebooks showing how to use DeepDanio.
   - `predict.ipynb`: predict accessibility of a genomic region or a custom sequence, and plot predictions.
+  - `contributions.ipynb`: load and plot contribution scores of a cell state-specific peak.
 - **[`data`](./data/)**: data download and processing.
   - `download_data.py`: downloads the reference genome, raw scATAC-seq data, and processed training data.
   - `process.py`: generates training data (peak sequences, normalized signal, and random genomic negative regions) and chromosome-based data splits from raw data.
@@ -25,6 +26,8 @@ The list of cell states predicted by DeepDanio, along with their cell type, deve
   - `deepdanio/train.py`: trains a model on one data split.
 - **[`analysis`](./analysis/)**: analyses of trained models.
   - `model_performance/`: prediction performance on held-out chromosomes.
+  - `contributions/`: selection of cell state-specific peaks and calculation of their contribution scores (DeepSHAP). See the folder's [README](./analysis/contributions/README.md) for more information.
+  - `motifs/`: motif discovery (TF-MoDISco), clustering across cell states, and motif contributions along differentiation paths. See the folder's [README](./analysis/motifs/README.md) for more information.
 
 ## Models
 
@@ -74,11 +77,48 @@ See the [`models`](./models/) folder's [README](./models/README.md) for more inf
 
 Run `analysis/model_performance/predict.py` to predict the validation and test chromosomes of each split with its corresponding model, then follow [`analysis/model_performance/analysis.ipynb`](./analysis/model_performance/analysis.ipynb) to calculate performance metrics per cell state and per peak.
 
+### Exploring contribution scores
+
+Download the precomputed contribution scores and the processed training data:
+
+```
+python analysis/contributions/download_contributions.py
+python data/download_data.py
+```
+
+Then follow [`examples/contributions.ipynb`](./examples/contributions.ipynb) to load and plot the contributions of a peak. Briefly:
+
+```python
+from deepdanio import data
+
+contribs = data.load_contributions(peak_ids, cell_states)  # shape (n_peaks, n_cell_states, 500)
+```
+
+### Computing contributions of new sequences
+
+Contribution scores of any sequence in one cell state can be computed with DeepSHAP on the model ensemble:
+
+```python
+from deepdanio import definitions, interpret, model, sequence
+
+model_paths = [str(p) for p in definitions.DEEPDANIO_MODEL_PATHS.values()]
+keras_model = model.make_model_ensemble(model_paths)
+seqs_onehot = sequence.one_hot_encode(seqs)
+hyp_contribs = interpret.compute_contributions(keras_model, seqs_onehot, definitions.CELL_STATES.index(cell_state))
+contribs = (hyp_contribs * seqs_onehot).sum(axis=-1)  # shape (n_seqs, 500)
+```
+
+`hyp_contribs` are hypothetical contributions, i.e. the contributions each of the four bases would have at each position, with shape (n_seqs, 500, 4). Computing contributions takes about 0.2 seconds per sequence and cell state on a GPU, so a small number of sequences can be run on a CPU.
+
+### Reproducing contribution and motif analyses
+
+See [`analysis/contributions`](./analysis/contributions/) and then [`analysis/motifs`](./analysis/motifs/). Precomputed results can be downloaded with `download_contributions.py` and `download_motifs.py` in those folders.
+
 ## Requirements
 
 ### Hardware requirements
 
-Model training requires an NVIDIA GPU. Predictions on a small number of sequences can be run on a regular CPU.
+Model training and computing contribution scores at scale require an NVIDIA GPU. Predictions and contributions of a small number of sequences can be computed on a regular CPU. Motif discovery runs on CPU, and motif clustering requires R (see [`analysis/motifs`](./analysis/motifs/)).
 
 ### Software requirements
 
@@ -90,9 +130,9 @@ Tested on macOS (Apple Silicon) and Linux. On Linux x86_64, the CUDA runtime req
 
 This repo requires Python 3.11. Dependencies are declared in `pyproject.toml` and pinned to exact versions in `uv.lock`. They include:
 
-- Standard packages: `numpy` (1.x), `scipy`, `pandas`, `h5py`, `matplotlib`, `seaborn`, `biopython`, `logomaker`, `prtpy`, `numba`, `deeplift`, `memelite`.
+- Standard packages: `numpy` (1.x), `scipy`, `pandas`, `h5py`, `matplotlib`, `seaborn`, `biopython`, `logomaker`, `prtpy`, `numba`, `memelite`, `modisco-lite`, `leidenalg`. `leidenalg` is pinned to 0.11 to reproduce the released motifs.
 - `tensorflow` 2.14 with Keras 2. Note that starting with `tensorflow` 2.16, Keras 3 is included by default and may not work out of the box with this repository.
-- A [modified version of SHAP](https://github.com/castillohair/shap) for DeepSHAP contribution scores on genomic sequences, installed directly from GitHub.
+- A [modified version of SHAP](https://github.com/castillohair/shap) for DeepSHAP contribution scores on genomic sequences, which requires `deeplift`. It is installed from GitHub and compiled during installation.
 
 ## Installation guide
 
@@ -113,7 +153,11 @@ Alternatively, install into an existing Python 3.11 environment by running the f
 pip install -e .
 ```
 
-Either method requires `git`.
+Either method requires `git` and a C++ compiler, since the modified SHAP is downloaded from GitHub and compiled during installation. For example:
+
+- macOS: `xcode-select --install`
+- Ubuntu/Debian: `sudo apt install git build-essential`
+- Amazon Linux/RHEL/Fedora: `sudo dnf install git gcc gcc-c++`
 
 ## Citation
 

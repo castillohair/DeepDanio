@@ -33,6 +33,9 @@ dependencies = [
     "seaborn>=0.13.2",
     # Custom shap version for DeepSHAP on genomic sequences (hypothetical contributions)
     "shap",
+    "modisco-lite==2.2.1",
+    # leidenalg 0.12 changes TF-MoDISco patterns relative to the released results
+    "leidenalg>=0.11,<0.12",
 ]
 
 [dependency-groups]

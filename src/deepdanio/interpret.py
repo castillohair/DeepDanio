@@ -175,7 +175,8 @@ def cwm_similarity(seq_onehot, seq_contrib, cwm, revcomp=True):
     seq_onehot : numpy.ndarray
         One-hot sequence with shape (seq_length, 4).
     seq_contrib : numpy.ndarray
-        Hypothetical contributions with shape (seq_length, 4).
+        Hypothetical contributions with shape (seq_length, 4), or actual
+        contributions with shape (seq_length, 1).
     cwm : numpy.ndarray
         Contribution weight matrix with shape (motif_length, 4).
     revcomp : bool, optional
@@ -277,7 +278,8 @@ def scan_cwm(
     seqs_onehot : numpy.ndarray
         One-hot sequences with shape (n_seqs, seq_length, 4).
     seqs_contrib : array-like
-        Hypothetical contributions with shape (n_seqs, seq_length, 4).
+        Hypothetical contributions with shape (n_seqs, seq_length, 4), or
+        actual contributions with shape (n_seqs, seq_length, 1).
     cwm : numpy.ndarray
         Contribution weight matrix with shape (motif_length, 4).
     pwm : numpy.ndarray

@@ -40,9 +40,10 @@ STAGES = CELL_STATE_METADATA['stage'].unique().tolist()
 TRAJECTORY_COORDS_PATH = RESOURCES_DIR / 'trajectory_coords.tsv'
 TRAJECTORY_EDGES_PATH = RESOURCES_DIR / 'trajectory_edges.tsv'
 
-# Lineage trajectories: cell states from high cells to each 6-somite cell state
-with open(RESOURCES_DIR / 'trajectories.json') as _f:
-    TRAJECTORIES = _json.load(_f)
+# Paths through the differentiation trajectory, from high cells to each
+# 6-somite cell state, indexed by the cell type of the 6-somite cell state
+with open(RESOURCES_DIR / 'differentiation_paths.json') as _f:
+    DIFFERENTIATION_PATHS = _json.load(_f)
 
 # Trained models
 ################
@@ -56,11 +57,42 @@ DEEPDANIO_MODEL_PATHS = {
     split: DEEPDANIO_MODEL_DIR / f'{DEEPDANIO_MODEL_NAME.format(split=split)}.h5' for split in DEEPDANIO_SPLITS
 }
 
+# Model predictions
+###################
+# Ensemble predictions on all peaks, with datasets 'peak_id' and 'pred'
+# (n_peaks, n_cell_states)
+PREDICTIONS_DIR = DATA_DIR / 'predictions'
+ENSEMBLE_PREDICTIONS_PATH = PREDICTIONS_DIR / 'ensemble_predictions.h5'
+
 # Model interpretation
 ######################
-# Hypothetical contribution scores of cell state-specific peaks in all cell
-# states, with shape (n_peaks, n_cell_states, SEQ_LENGTH, 4)
-CONTRIBUTIONS_PATH = DATA_DIR / 'contributions' / 'contributions.h5'
+# Contribution scores of cell state-specific peaks in all cell states: actual
+# contributions in a single file, and hypothetical contributions in one file
+# per cell state, named by cell state index
+CONTRIBUTIONS_DIR = DATA_DIR / 'contributions'
+# Cell state-specific peaks for which contributions were computed, ranked by
+# predicted specificity within each cell state
+SELECTED_PEAKS_PATH = CONTRIBUTIONS_DIR / 'selected_peaks.tsv'
+CONTRIBUTIONS_PATH = CONTRIBUTIONS_DIR / 'contributions.h5'
+HYPOTHETICAL_CONTRIBUTIONS_DIR = CONTRIBUTIONS_DIR / 'hypothetical'
+HYPOTHETICAL_CONTRIBUTIONS_NAME = '{cell_state_idx:02d}.h5'
 
-# Manual annotation of TF-MoDISco motif clusters
-MOTIF_CLUSTER_NAMES_PATH = RESOURCES_DIR / 'motif_cluster_names.tsv'
+# Motifs discovered with TF-MoDISco in each cell state, in one directory per
+# cell state named by cell state index: TF-MoDISco results, trimmed motif CWMs
+# and PWMs, seqlets, and motif matches in the cell state's selected peaks
+MOTIFS_DIR = DATA_DIR / 'motifs'
+MOTIFS_CELL_STATE_DIR_NAME = '{cell_state_idx:02d}'
+MODISCO_RESULTS_NAME = 'modisco_results.h5'
+CWM_NAME = 'cwm_trimmed.meme'
+PWM_NAME = 'pwm_trimmed.meme'
+SEQLETS_NAME = 'seqlets.tsv'
+MOTIF_MATCHES_NAME = 'motif_matches.tsv'
+
+# Clustering of TF-MoDISco motifs across cell states: cluster of each motif,
+# and consensus PWM of each cluster
+MOTIF_CLUSTERING_DIR = MOTIFS_DIR / 'clustering'
+MOTIF_CLUSTERS_PATH = MOTIF_CLUSTERING_DIR / 'motif_clusters.tsv'
+CLUSTER_PWMS_PATH = MOTIF_CLUSTERING_DIR / 'cluster_pwms.meme'
+
+# Manual annotation of the motif clusters
+MOTIF_CLUSTER_NAMES_PATH = MOTIFS_DIR / 'motif_cluster_names.tsv'
