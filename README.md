@@ -1,6 +1,6 @@
 # DeepDanio
 
-**Predict chromatin accessibility of any DNA sequence across 95 zebrafish embryonic cell states.** DeepDanio is a deep learning model trained on pseudobulk single-cell ATAC-seq data from zebrafish embryogenesis, covering cell states from the high stage to the 6-somite stage. This repository contains code associated with our [preprint](https://doi.org/10.1101/2024.08.27.609971), and can be used to make predictions with pretrained models, reproduce model training, and evaluate model performance.
+**Predict chromatin accessibility across 95 zebrafish embryonic cell states.** DeepDanio is a deep learning model trained on pseudobulk single-cell ATAC-seq data from zebrafish embryogenesis, covering cell states from the high stage to the 6-somite stage. This repository contains code associated with our [preprint](https://doi.org/10.1101/2024.08.27.609971), and contains code to make predictions, reproduce model training, and evaluate model performance.
 
 The list of cell states predicted by DeepDanio, along with their cell type, developmental stage, and lineage, can be found [here](./src/deepdanio/resources/cell_state_metadata.csv).
 
