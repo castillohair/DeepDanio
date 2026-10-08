@@ -38,7 +38,7 @@ Peaks whose ensemble predictions have a mean squared error of 0.125 or more agai
 
 The script first predicts all peaks and saves the predictions to `data/predictions/ensemble_predictions.h5`, which is reused in later runs or can be downloaded instead. Predicting takes about 25 minutes on an NVIDIA A10G GPU (AWS g5.xlarge instance). It then saves the selected peaks to `data/contributions/selected_peaks.tsv`.
 
-Small floating point differences across hardware can swap the order of peaks with nearly equal specificity. The released table is the original selection.
+Reruns can give slightly different predictions than the original run, which can change the order of peaks with nearly equal specificity and the peaks selected near the MSE and rank cutoffs. The released table is the original selection.
 
 ### Hypothetical contributions
 

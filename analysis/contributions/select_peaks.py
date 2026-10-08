@@ -15,13 +15,11 @@ Outputs:
 - The selected peaks table, with columns 'cell_state', 'peak_id', 'rank'
   (0-based), 'specificity', and 'mse'.
 
-The original selection used predictions computed on a g4dn.xlarge instance
-(NVIDIA T4), which does not support TensorFloat-32 (TF32). Newer GPUs such as
-the A10G use TF32 by default, which changes predictions by up to about 1e-3
-and the peaks selected near the MSE and rank cutoffs, so TF32 is disabled
-here. Even so, small floating point differences across hardware can swap the
-order of peaks with nearly equal specificity in subsequent runs. The released
-table is the original selection.
+Reruns can give slightly different predictions than the original run, which
+can change the order of peaks with nearly equal specificity and the peaks
+selected near the MSE and rank cutoffs. Disabling TensorFloat-32 (TF32), which
+TensorFlow uses by default on recent GPUs, brings predictions closer to the
+original ones. The released table is the original selection.
 
 """
 import h5py
